@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aroma Kopi · Racik Kopimu</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{color-scheme:dark;--bg:#1a120d;--card:#251a13;--line:#3b2a20;--tx:#f3e9dc;--mu:#b9a58e;--gold:#d4a76a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:radial-gradient(1200px 500px at 50% -10%,#3a281c,var(--bg));color:var(--tx);font-family:Inter,system-ui,sans-serif;font-weight:300;min-height:100%}
+header{text-align:center;padding:48px 20px 24px}
+header small{letter-spacing:.35em;color:var(--gold);font-size:11px;text-transform:uppercase}
+h1{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(34px,7vw,56px);margin:10px 0}
+header p{color:var(--mu);max-width:460px;margin:0 auto}
+main{max-width:720px;margin:0 auto;padding:0 16px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:18px}
+h2{font-family:'Playfair Display',Georgia,serif;font-weight:500;font-size:22px;margin:0;color:var(--gold)}
+.hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px}
+.add{display:flex;align-items:center;gap:8px;background:var(--gold);color:#2a1a0e;border:0;border-radius:999px;padding:6px 14px 6px 8px;font:inherit;font-weight:500;font-size:14px;cursor:pointer}
+.add i{font-style:normal;width:26px;height:26px;border-radius:50%;background:#2a1a0e;color:var(--gold);display:grid;place-items:center;font-size:20px;line-height:1}
+.blk{border:1px solid var(--line);background:#1f150f;border-radius:16px;padding:16px;margin-bottom:14px}
+.bh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.bh b{font-family:'Playfair Display',Georgia,serif;font-weight:500;font-size:17px}
+.x{background:none;border:1px solid #6b3b30;color:#e29a8b;border-radius:999px;padding:4px 12px;font:inherit;font-size:12px;cursor:pointer}
+.lb{color:var(--mu);font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin:16px 0 8px}
+.sel{width:100%;display:flex;align-items:center;gap:12px;background:#1d140e;border:1px solid var(--line);color:var(--tx);border-radius:14px;padding:14px 16px;font:inherit;font-size:16px;cursor:pointer;text-align:left}
+.sel .arrow{margin-left:auto;transition:transform .3s;color:var(--gold)}
+.sel.open .arrow{transform:rotate(180deg)}
+.dot{width:22px;height:22px;border-radius:50%;flex:none;border:2px solid rgba(255,255,255,.15)}
+.list{display:none}.list.open{display:block}
+.item{display:flex;align-items:center;gap:12px;padding:13px 10px;border-bottom:1px solid var(--line);cursor:pointer;border-radius:10px;transition:background .2s}
+.item:hover,.item.on{background:#33241a}
+.item .n{font-weight:500}.item .d{color:var(--mu);font-size:13px}
+.item .p{margin-left:auto;color:var(--gold);white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{border:1px solid var(--line);background:#1d140e;color:var(--tx);border-radius:999px;padding:10px 16px;font:inherit;font-size:14px;cursor:pointer;transition:.2s}
+.chip:hover{border-color:var(--gold)}
+.chip.on{background:var(--gold);color:#2a1a0e;border-color:var(--gold);font-weight:500}
+.chip small{opacity:.75;margin-left:4px}
+.qty{display:flex;align-items:center;gap:14px}
+.qty button{width:38px;height:38px;border-radius:50%;border:1px solid var(--gold);background:none;color:var(--gold);font-size:20px;cursor:pointer}
+.qty b{font-size:20px;min-width:24px;text-align:center}
+.row{display:flex;justify-content:space-between;padding:5px 0;color:var(--mu);gap:10px}
+.row.h{color:var(--tx);font-weight:500;padding-top:12px}
+.total{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);margin-top:10px;padding-top:14px;font-size:15px}
+.total b{font-family:'Playfair Display',Georgia,serif;font-size:30px;color:var(--gold)}
+.btn{width:100%;margin-top:14px;padding:15px;border:0;border-radius:14px;background:linear-gradient(135deg,#e0b878,#b9854a);color:#2a1a0e;font:inherit;font-weight:500;font-size:16px;cursor:pointer}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btns{display:flex;gap:12px;flex-wrap:wrap}
+.btns .btn{flex:1 1 180px;margin-top:14px}
+.btn.alt{background:none;border:1px solid var(--gold);color:var(--gold)}
+.nama{width:100%;padding:14px;margin-top:14px;border-radius:14px;border:1px solid var(--line);background:#1d140e;color:var(--tx);font:inherit;font-size:16px}
+@media print{@page{margin:6mm}html,body{background:#fff!important}body *{visibility:hidden}#rc,#rc *{visibility:visible}#rc{position:absolute;left:0;top:0;width:100%}.receipt{box-shadow:none;max-width:80mm;margin:0 auto}}
+.receipt{background:#f6efe3;color:#2b1d12;border-radius:6px;padding:24px 22px;font-family:'Courier New',monospace;font-size:13px;max-width:360px;margin:0 auto;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.receipt .c{text-align:center}.receipt hr{border:0;border-top:1px dashed #8a7258;margin:10px 0}
+.receipt .l{display:flex;justify-content:space-between;gap:10px}
+.receipt .s{padding-left:12px;color:#6b5740}
+.receipt .t{font-weight:700;font-size:15px}
+.hint{color:var(--mu);text-align:center;font-size:13px}
+footer{text-align:center;color:var(--mu);font-size:12px;padding-bottom:30px}
+</style>
+</head>
+<body>
+<header>
+<small>Specialty Coffee · Since 2024</small>
+<h1>Aroma Kopi</h1>
+<p>Racik kopi favoritmu dengan topping pilihan. Tambah lebih dari satu kopi, lihat struk, lalu pesan langsung.</p>
+</header>
+<main>
+<section class="card">
+<div class="hd"><h2>Pilih Kopi</h2><button class="add" id="add" aria-label="Tambah kopi"><i>+</i>Tambah kopi</button></div>
+<div id="blocks"></div>
+</section>
+
+<section class="card">
+<div class="hd"><h2>Ringkasan Harga</h2></div>
+<div id="sum" class="hint">Pilih kopi terlebih dahulu.</div>
+<div class="total"><span>Total</span><b id="tot">Rp 0</b></div>
+</section>
+
+<section class="card">
+<div class="hd"><h2>Struk Belanja</h2></div>
+<div id="rc" class="hint">Struk akan muncul setelah kamu memilih kopi.</div>
+<input id="nama" class="nama" placeholder="Nama kamu (untuk dipanggil)" maxlength="40" autocomplete="off">
+<div class="btns"><button class="btn" id="buy" disabled>Pesan Sekarang</button><button class="btn alt" id="pdf" disabled>Unduh Struk PDF</button><button class="btn alt" id="prt" disabled>Cetak Struk</button></div>
+<div class="hint" id="msg" style="margin-top:10px"></div>
+</section>
+</main>
+<footer>© Aroma Kopi · Dibuat dengan secangkir inspirasi</footer>
+
+<script>
+const COFFEES=[
+{n:'Espresso',d:'Pekat, bold, satu tegukan penuh karakter',p:18000,c:'#2a1a12'},
+{n:'Americano',d:'Espresso ringan dengan air panas',p:22000,c:'#4a3326'},
+{n:'Cappuccino',d:'Espresso, susu, busa lembut',p:28000,c:'#b08968'},
+{n:'Caffe Latte',d:'Susu creamy dengan espresso lembut',p:30000,c:'#d9bf9b'},
+{n:'Mocha',d:'Perpaduan kopi dan cokelat',p:32000,c:'#7a523a'},
+{n:'Caramel Macchiato',d:'Manis karamel, aroma kopi hangat',p:34000,c:'#c68642'},
+{n:'Kopi Susu Gula Aren',d:'Manis legit khas gula aren',p:26000,c:'#8c5e3c'}];
+const VERS=[{n:'Panas',p:0},{n:'Dingin',p:3000},{n:'Blended',p:8000}];
+const TOPS=[{n:'Oreo',p:5000},{n:'Meses Cokelat',p:4000},{n:'Whipped Cream',p:5000},{n:'Boba',p:6000},{n:'Saus Karamel',p:4000},{n:'Extra Shot',p:7000},{n:'Keju',p:5000}];
+const rp=n=>'Rp '+n.toLocaleString('id-ID');
+const $=id=>document.getElementById(id);
+const mk=()=>({c:null,v:0,t:[],q:1,open:false});
+let items=[mk()],no=null,when=null;
+
+const tops=it=>it.t.slice().sort((a,b)=>a-b).map(i=>TOPS[i]);
+const unit=it=>COFFEES[it.c].p+VERS[it.v].p+tops(it).reduce((a,b)=>a+b.p,0);
+const chip=(v,on,a,k)=>`<button class="chip ${on?'on':''}" data-a="${a}" data-k="${k}">${v.n}<small>${v.p?'+'+rp(v.p).slice(3):'gratis'}</small></button>`;
+
+function render(){
+$('blocks').innerHTML=items.map((it,b)=>{
+const c=it.c!==null?COFFEES[it.c]:null;
+return `<div class="blk" data-b="${b}">
+<div class="bh"><b>Kopi ${b+1}</b>${items.length>1?'<button class="x" data-a="del">Hapus</button>':''}</div>
+<button class="sel ${it.open?'open':''}" data-a="tog"><span class="dot" style="background:${c?c.c:'#555'}"></span><span>${c?c.n:'Ketuk untuk memilih kopi'}</span><span class="arrow">▾</span></button>
+<div class="list ${it.open?'open':''}">${COFFEES.map((x,k)=>`<div class="item ${it.c===k?'on':''}" data-a="pick" data-k="${k}"><span class="dot" style="background:${x.c}"></span><div><div class="n">${x.n}</div><div class="d">${x.d}</div></div><span class="p">${rp(x.p)}</span></div>`).join('')}</div>
+<div class="lb">Versi</div><div class="chips">${VERS.map((v,k)=>chip(v,it.v===k,'ver',k)).join('')}</div>
+<div class="lb">Topping tambahan</div><div class="chips">${TOPS.map((v,k)=>chip(v,it.t.includes(k),'top',k)).join('')}</div>
+<div class="lb">Jumlah</div><div class="qty"><button data-a="minus">−</button><b>${it.q}</b><button data-a="plus">+</button></div>
+</div>`}).join('');
+summary()}
+
+$('blocks').onclick=e=>{
+const el=e.target.closest('[data-a]');if(!el)return;
+const b=+el.closest('[data-b]').dataset.b,it=items[b],a=el.dataset.a,k=+el.dataset.k;
+if(a==='tog')it.open=!it.open;
+else if(a==='pick'){it.c=k;it.open=false}
+else if(a==='ver')it.v=k;
+else if(a==='top'){const i=it.t.indexOf(k);i>=0?it.t.splice(i,1):it.t.push(k)}
+else if(a==='minus'){if(it.q>1)it.q--}
+else if(a==='plus'){if(it.q<20)it.q++}
+else if(a==='del')items.splice(b,1);
+render()};
+$('add').onclick=()=>{items.push(mk());render();
+const bs=document.querySelectorAll('.blk');bs[bs.length-1].scrollIntoView({behavior:'smooth',block:'center'})};
+
+const valid=()=>items.filter(i=>i.c!==null);
+const grand=()=>valid().reduce((a,i)=>a+unit(i)*i.q,0);
+
+function summary(){
+const v=valid();
+if(!v.length){$('sum').className='hint';$('sum').textContent='Pilih kopi terlebih dahulu.';$('tot').textContent='Rp 0';
+$('rc').className='hint';$('rc').textContent='Struk akan muncul setelah kamu memilih kopi.';$('pdf').disabled=true;$('prt').disabled=true;$('buy').disabled=true;return}
+if(!no){no='AK-'+Math.floor(100000+Math.random()*900000);when=new Date().toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'})}
+$('sum').className='';
+$('sum').innerHTML=v.map(it=>`<div class="row h"><span>${it.q}× ${COFFEES[it.c].n}</span><span>${rp(unit(it)*it.q)}</span></div>
+<div class="row"><span>Dasar kopi</span><span>${rp(COFFEES[it.c].p)}</span></div>
+<div class="row"><span>Versi ${VERS[it.v].n}</span><span>${rp(VERS[it.v].p)}</span></div>
+${tops(it).map(x=>`<div class="row"><span>Topping ${x.n}</span><span>${rp(x.p)}</span></div>`).join('')}
+<div class="row"><span>${rp(unit(it))} per cup</span><span></span></div>`).join('');
+$('tot').textContent=rp(grand());
+$('rc').className='';
+$('rc').innerHTML=`<div class="receipt"><div class="c"><b style="font-size:17px">AROMA KOPI</b><br>Jl. Kopi Nikmat No. 1<br>Medan</div><hr>
+<div class="l"><span>No</span><span>${no}</span></div><div class="l"><span>Tanggal</span><span>${when}</span></div><hr>
+${v.map(it=>`<div class="l"><span>${it.q}x ${COFFEES[it.c].n}</span><span>${rp(unit(it)*it.q)}</span></div>
+<div class="l s"><span>${VERS[it.v].n}</span><span>${rp(VERS[it.v].p)}</span></div>
+${tops(it).map(x=>`<div class="l s"><span>+ ${x.n}</span><span>${rp(x.p)}</span></div>`).join('')}`).join('<div style="height:6px"></div>')}<hr>
+<div class="l t"><span>TOTAL</span><span>${rp(grand())}</span></div><hr>
+<div class="c">Terima kasih sudah mampir!<br>Selamat menikmati kopimu ☕</div></div>`;
+$('pdf').disabled=false;$('prt').disabled=false;$('buy').disabled=false}
+
+$('pdf').onclick=async()=>{
+const m=$('msg');m.textContent='';
+try{
+const v=valid();
+const n=v.reduce((a,i)=>a+2+i.t.length,0);
+const d=new window.jspdf.jsPDF({unit:'mm',format:[80,80+n*5+v.length*2]});
+d.setFont('courier','bold');d.setFontSize(14);d.text('AROMA KOPI',40,10,{align:'center'});
+d.setFont('courier','normal');d.setFontSize(8);d.text('Jl. Kopi Nikmat No. 1, Medan',40,15,{align:'center'});
+let y=21;const hr=()=>{d.setFont('courier','normal');d.text('-'.repeat(38),40,y,{align:'center'});y+=5};
+const row=(a,b,bold,ind)=>{d.setFont('courier',bold?'bold':'normal');d.text(a,6+(ind?3:0),y);d.text(b,74,y,{align:'right'});y+=5};
+hr();row('No',no);row('Tanggal',when);hr();
+v.forEach(it=>{row(`${it.q}x ${COFFEES[it.c].n}`,rp(unit(it)*it.q),true);
+row(VERS[it.v].n,rp(VERS[it.v].p),false,true);
+tops(it).forEach(x=>row('+ '+x.n,rp(x.p),false,true));y+=2});
+hr();d.setFontSize(10);row('TOTAL',rp(grand()),true);d.setFontSize(8);hr();
+d.setFont('courier','normal');d.text('Terima kasih sudah mampir!',40,y+1,{align:'center'});
+d.text('Selamat menikmati kopimu',40,y+6,{align:'center'});
+d.save(`struk-${no}.pdf`);
+m.textContent='Struk PDF siap disimpan.';
+}catch(e){m.textContent=(e&&e.code==='declined')?'Unduhan dibatalkan.':'Gagal membuat PDF, coba lagi.'}};
+
+$('prt').onclick=()=>{
+const m=$('msg');m.textContent='';
+try{window.print();m.textContent='Jika dialog cetak tidak muncul, unduh struk PDF lalu cetak dari file tersebut.'}
+catch(e){m.textContent='Cetak langsung tidak didukung di tampilan ini. Silakan unduh struk PDF lalu cetak dari file tersebut.'}};
+
+// Data pesanan untuk dikirim ke penjual
+window.getOrder=()=>({no,when,items:valid().map(it=>({kopi:COFFEES[it.c].n,versi:VERS[it.v].n,topping:tops(it).map(x=>x.n),qty:it.q,harga:unit(it)*it.q})),total:grand()});
+// Setelah pesanan terkirim, pesanan berikutnya dapat nomor baru
+window.newOrder=()=>{no=null;when=null};
+
+render();
+</script>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getFirestore,collection,addDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+// GANTI dengan konfigurasi dari Firebase Console (sama dengan di admin.html)
+const firebaseConfig = {
+  apiKey: "AIzaSyBHC2QaUPzbRZSR6tEaeJyygu61o2dnCvE",
+  authDomain: "aroma-kopi-af837.firebaseapp.com",
+  projectId: "aroma-kopi-af837",
+  appId: "1:984550857645:web:8f14ace9842e1d83535f24",
+};
+
+const db=getFirestore(initializeApp(firebaseConfig));
+const msg=document.getElementById('msg'),buy=document.getElementById('buy');
+
+buy.onclick=async()=>{
+  const nama=document.getElementById('nama').value.trim();
+  if(!nama){msg.textContent='Isi nama dulu ya.';return}
+  buy.disabled=true;msg.textContent='Mengirim pesanan...';
+  try{
+    const o=window.getOrder();
+    await addDoc(collection(db,'orders'),{...o,nama,status:'baru',createdAt:serverTimestamp()});
+    msg.textContent='Pesanan terkirim! Tunjukkan struk ini ke kasir ☕';
+    window.newOrder();
+  }catch(e){
+    buy.disabled=false;
+    msg.textContent='Gagal mengirim pesanan, coba lagi.';
+  }
+};
+</script>
+</body>
+</html>
